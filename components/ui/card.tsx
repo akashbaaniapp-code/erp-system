@@ -1,0 +1,51 @@
+import * as React from "react";
+
+function Card({
+  className = "",
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={`rounded-xl border bg-white shadow-sm ${className}`}
+      {...props}
+    />
+  );
+}
+
+function CardHeader({
+  className = "",
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={`flex flex-col space-y-1.5 p-6 ${className}`}
+      {...props}
+    />
+  );
+}
+
+function CardTitle({
+  className = "",
+  ...props
+}: React.HTMLAttributes<HTMLHeadingElement>) {
+  return (
+    <h3
+      className={`text-lg font-semibold ${className}`}
+      {...props}
+    />
+  );
+}
+
+function CardContent({
+  className = "",
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={`p-6 pt-0 ${className}`}
+      {...props}
+    />
+  );
+}
+
+export { Card, CardHeader, CardTitle, CardContent };
