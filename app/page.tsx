@@ -8,12 +8,12 @@ import {
 import StatCard from "@/components/dashboard/stat-card";
 
 async function getDashboardData() {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL}/api/dashboard`,
-    {
-      cache: "no-store",
-    }
-  );
+ const res = await fetch(
+  "/api/dashboard",
+  {
+    cache: "no-store",
+  }
+);
 
   if (!res.ok) {
     return {
