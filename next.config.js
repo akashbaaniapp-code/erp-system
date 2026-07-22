@@ -1,6 +1,6 @@
-import type { NextConfig } from "next";
+/** @type {import('next').NextConfig} */
 
-const nextConfig: NextConfig = {
+const nextConfig = {
   serverExternalPackages: [
     "@prisma/client",
     "@prisma/adapter-libsql",
@@ -8,4 +8,4 @@ const nextConfig: NextConfig = {
   ],
 };
 
-export default nextConfig;
+module.exports = nextConfig;
