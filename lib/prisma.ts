@@ -2,15 +2,20 @@ import "server-only";
 
 import { PrismaClient } from "@prisma/client";
 import { PrismaLibSQL } from "@prisma/adapter-libsql";
+import { createClient } from "@libsql/client";
 
-const globalForPrisma = globalThis as {
-  prisma?: PrismaClient;
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined;
 };
 
-const adapter = new PrismaLibSQL({
+// libSQL client তৈরি করুন
+const libsql = createClient({
   url: process.env.DATABASE_URL!,
   authToken: process.env.DATABASE_AUTH_TOKEN,
 });
+
+// adapter তৈরি করুন
+const adapter = new PrismaLibSQL(libsql);
 
 export const prisma =
   globalForPrisma.prisma ??
