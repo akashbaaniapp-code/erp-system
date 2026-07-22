@@ -7,7 +7,28 @@ import {
 
 import StatCard from "@/components/dashboard/stat-card";
 
-export default function Home() {
+async function getDashboardData() {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_APP_URL}/api/dashboard`,
+    {
+      cache: "no-store",
+    }
+  );
+
+  if (!res.ok) {
+    return {
+      productCount: 0,
+      totalStock: 0,
+    };
+  }
+
+  return res.json();
+}
+
+
+export default async function Home() {
+  const data = await getDashboardData();
+
   return (
     <div>
       <h1 className="text-3xl font-bold text-slate-800">
@@ -23,21 +44,24 @@ export default function Home() {
 
         <StatCard
           title="Total Products"
-          value="0"
+          value={data.productCount}
           icon={<Package size={28} />}
         />
 
+
         <StatCard
           title="Total Stock"
-          value="0"
+          value={data.totalStock}
           icon={<Warehouse size={28} />}
         />
+
 
         <StatCard
           title="Total Sales"
           value="0"
           icon={<ShoppingCart size={28} />}
         />
+
 
         <StatCard
           title="Customers"
