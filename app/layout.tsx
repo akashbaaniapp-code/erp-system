@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import DashboardLayout from "@/components/layout/dashboard-layout";
 
 export const metadata: Metadata = {
   title: "ERP System",
-  description: "Business ERP Management System",
+  description: "Business Management ERP System",
 };
 
 export default function RootLayout({
@@ -13,7 +14,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <DashboardLayout>
+          {children}
+        </DashboardLayout>
+      </body>
     </html>
   );
 }
