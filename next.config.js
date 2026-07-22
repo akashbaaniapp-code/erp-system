@@ -1,6 +1,11 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  // output: "export",   // এই লাইনটা অবশ্যই কমেন্ট করা থাকতে হবে বা ডিলিট
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  serverExternalPackages: [
+    "@prisma/client",
+    "@prisma/adapter-libsql",
+    "@libsql/client",
+  ],
 };
 
-module.exports = nextConfig;
+export default nextConfig;
