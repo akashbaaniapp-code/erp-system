@@ -6,10 +6,28 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  function handleLogin(e: React.FormEvent) {
-    e.preventDefault()
-    alert('Login system next step-এ তৈরি হবে')
+async function handleLogin(e: React.FormEvent) {
+  e.preventDefault()
+
+  try {
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    })
+
+    const data = await res.json()
+
+    alert(data.message)
+  } catch (error) {
+    alert("Server Error")
   }
+}
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-5">
