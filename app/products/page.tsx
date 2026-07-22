@@ -1,104 +1,155 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, Search } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { ArrowLeft, Save } from 'lucide-react'
 import Link from 'next/link'
 import DashboardLayout from "@/components/layout/dashboard-layout"
 
-const dummyProducts = [
-  { id: 1, name: "Product 1", sku: "SKU-001", category: "Electronics", price: 100, quantity: 10 },
-  { id: 2, name: "Product 2", sku: "SKU-002", category: "Clothing", price: 50, quantity: 25 },
-  { id: 3, name: "Product 3", sku: "SKU-003", category: "Books", price: 30, quantity: 5 },
-]
+function AddProductContent() {
+  const router = useRouter()
+  const [loading, setLoading] = useState(false)
+  const [form, setForm] = useState({
+    name: '',
+    sku: '',
+    category: '',
+    quantity: 0,
+    price: 0,
+    description: '',
+  })
 
-function ProductsContent() {
-  const [searchTerm, setSearchTerm] = useState('')
-
-  const filteredProducts = dummyProducts.filter(product =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.sku.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    try {
+      const res = await fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      if (res.ok) {
+        alert('Product added successfully!')
+        router.push('/products')
+      } else {
+        alert('Failed to add product')
+      }
+    } catch (error) {
+      alert('Error adding product')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Products</h1>
-          <p className="text-gray-500 mt-1">Manage your product inventory</p>
-        </div>
-        <Link href="/products/add">
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
-            <Plus size={18} />
-            Add Product
-          </button>
+      <div className="flex items-center gap-4 mb-6">
+        <Link href="/products" className="p-2 hover:bg-gray-100 rounded-lg transition">
+          <ArrowLeft size={20} />
         </Link>
-      </div>
-
-      <div className="mb-6">
-        <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-          />
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Add Product</h1>
+          <p className="text-gray-500 mt-1">Add a new product to inventory</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="text-left text-xs font-medium text-gray-500 uppercase px-6 py-3">Product</th>
-                <th className="text-left text-xs font-medium text-gray-500 uppercase px-6 py-3">SKU</th>
-                <th className="text-left text-xs font-medium text-gray-500 uppercase px-6 py-3">Category</th>
-                <th className="text-right text-xs font-medium text-gray-500 uppercase px-6 py-3">Price</th>
-                <th className="text-right text-xs font-medium text-gray-500 uppercase px-6 py-3">Stock</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {filteredProducts.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="text-center py-8 text-gray-500">No products found</td>
-                </tr>
-              ) : (
-                filteredProducts.map((product) => (
-                  <tr key={product.id} className="hover:bg-gray-50 transition">
-                    <td className="px-6 py-4 font-medium text-gray-900">{product.name}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{product.sku}</td>
-                    <td className="px-6 py-4">
-                      <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
-                        {product.category}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right font-medium">৳{product.price}</td>
-                    <td className="px-6 py-4 text-right">
-                      <span className={`px-2 py-1 text-xs rounded-full ${
-                        product.quantity > 10 ? 'bg-green-100 text-green-700' :
-                        product.quantity > 0 ? 'bg-yellow-100 text-yellow-700' :
-                        'bg-red-100 text-red-700'
-                      }`}>
-                        {product.quantity} units
-                      </span>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+      <div className="max-w-2xl">
+        <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">Product Name *</label>
+            <input
+              type="text"
+              placeholder="Enter product name"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">SKU *</label>
+            <input
+              type="text"
+              placeholder="Enter SKU (e.g., PRD-001)"
+              value={form.sku}
+              onChange={(e) => setForm({ ...form, sku: e.target.value })}
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">Category</label>
+            <input
+              type="text"
+              placeholder="Enter category (e.g., Electronics)"
+              value={form.category}
+              onChange={(e) => setForm({ ...form, category: e.target.value })}
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Quantity *</label>
+              <input
+                type="number"
+                placeholder="0"
+                value={form.quantity}
+                onChange={(e) => setForm({ ...form, quantity: Number(e.target.value) })}
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                required
+                min="0"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Price (৳) *</label>
+              <input
+                type="number"
+                placeholder="0.00"
+                value={form.price}
+                onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                required
+                min="0"
+                step="0.01"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">Description</label>
+            <textarea
+              placeholder="Enter product description"
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              rows={3}
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none"
+            />
+          </div>
+
+          <div className="flex gap-3 pt-2">
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg flex items-center gap-2 transition disabled:opacity-50"
+            >
+              {loading ? 'Adding...' : <><Save size={18} /> Add Product</>}
+            </button>
+            <Link href="/products" className="px-6 py-2.5 border border-gray-200 rounded-lg hover:bg-gray-50 transition text-gray-700">
+              Cancel
+            </Link>
+          </div>
+        </form>
       </div>
     </div>
   )
 }
 
-export default function ProductsPage() {
+export default function AddProductPage() {
   return (
     <DashboardLayout>
-      <ProductsContent />
+      <AddProductContent />
     </DashboardLayout>
   )
 }
