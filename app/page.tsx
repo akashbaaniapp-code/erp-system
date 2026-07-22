@@ -1,40 +1,13 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-export default function HomePage() {
+export default function Home() {
   return (
-    <main className="p-6">
-      <h1 className="mb-6 text-3xl font-bold">
-        ERP System Dashboard
+    <div>
+      <h1 className="text-3xl font-bold text-slate-800">
+        Welcome to ERP Dashboard
       </h1>
 
-      <div className="grid gap-6 md:grid-cols-3">
-        <Card>
-          <CardHeader>
-            <CardTitle>মোট প্রোডাক্ট</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">0</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>মোট স্টক</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">0</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>মোট অর্ডার</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">0</p>
-          </CardContent>
-        </Card>
-      </div>
-    </main>
+      <p className="mt-3 text-slate-600">
+        Manage your business from one place.
+      </p>
+    </div>
   );
 }
